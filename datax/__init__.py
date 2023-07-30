@@ -2,7 +2,7 @@ import grpc
 import json
 import os
 import msgpack
-from .protocol.datax_sdk_protocol_pb2 import NextOptions, EmitMessage
+from .protocol.datax_sdk_protocol_pb2 import NextOptions, EmitMessage, Request, GetRequestOptions, Reply
 from .protocol.datax_sdk_protocol_pb2_grpc import DataXStub
 
 
@@ -31,3 +31,15 @@ class DataX:
         else:
             request = EmitMessage(data=msgpack.packb(message))
         self.stub.Emit(request)
+
+    def request(self, backend: str, message: dict):
+        data = msgpack.packb(message)
+        self.stub.SubmitRequest(Request(backend=backend, data=data))
+
+    def next_request(self) -> (str, dict):
+        request = self.stub.GetRequest(GetRequestOptions())
+        return request.sender, msgpack.unpackb(request.data)
+
+    def reply(self, message: dict):
+        data = msgpack.packb(message)
+        self.stub.ReplyRequest(Reply(data=data))

@@ -49,12 +49,14 @@ class ReplyResult(_message.Message):
     def __init__(self) -> None: ...
 
 class Request(_message.Message):
-    __slots__ = ["data", "sender"]
+    __slots__ = ["backend", "data", "sender"]
+    BACKEND_FIELD_NUMBER: _ClassVar[int]
     DATA_FIELD_NUMBER: _ClassVar[int]
     SENDER_FIELD_NUMBER: _ClassVar[int]
+    backend: str
     data: bytes
     sender: str
-    def __init__(self, sender: _Optional[str] = ..., data: _Optional[bytes] = ...) -> None: ...
+    def __init__(self, sender: _Optional[str] = ..., backend: _Optional[str] = ..., data: _Optional[bytes] = ...) -> None: ...
 
 class Settings(_message.Message):
     __slots__ = []
