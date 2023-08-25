@@ -34,8 +34,13 @@ class DataX:
 
     def request(self, backend: str, message: dict):
         data = msgpack.packb(message)
+        reply = self.stub.SubmitRequest(Request(backend=backend, data=[data]))
+        return msgpack.unpackb(reply.data[0])
+
+    def request_many(self, backend: str, messages: list):
+        data = [msgpack.packb(it) for it in messages]
         reply = self.stub.SubmitRequest(Request(backend=backend, data=data))
-        return msgpack.unpackb(reply.data)
+        return [msgpack.unpackb(it) for it in reply.data]
 
     def next_request(self) -> (str, dict):
         request = self.stub.GetRequest(GetRequestOptions())
