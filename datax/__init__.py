@@ -48,4 +48,4 @@ class DataX:
 
     def reply(self, message: dict):
         data = msgpack.packb(message)
-        self.stub.ReplyRequest(Reply(data=data))
+        self.stub.ReplyRequest(Reply(data=[data]))
