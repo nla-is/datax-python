@@ -44,7 +44,7 @@ class DataX:
 
     def next_request(self) -> (str, dict):
         request = self.stub.GetRequest(GetRequestOptions())
-        return request.sender, msgpack.unpackb(request.data)
+        return request.sender, msgpack.unpackb(request.data[0])
 
     def reply(self, message: dict):
         data = msgpack.packb(message)
