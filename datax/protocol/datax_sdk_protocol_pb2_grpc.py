@@ -29,6 +29,11 @@ class DataXStub(object):
                 request_serializer=datax__sdk__protocol__pb2.EmitMessage.SerializeToString,
                 response_deserializer=datax__sdk__protocol__pb2.EmitResult.FromString,
                 )
+        self.FanOut = channel.unary_unary(
+                '/datax.sdk.protocol.v2.DataX/FanOut',
+                request_serializer=datax__sdk__protocol__pb2.FanOutRequest.SerializeToString,
+                response_deserializer=datax__sdk__protocol__pb2.FanOutResponse.FromString,
+                )
         self.GetRequest = channel.unary_unary(
                 '/datax.sdk.protocol.v2.DataX/GetRequest',
                 request_serializer=datax__sdk__protocol__pb2.GetRequestOptions.SerializeToString,
@@ -62,6 +67,12 @@ class DataXServicer(object):
         raise NotImplementedError('Method not implemented!')
 
     def Emit(self, request, context):
+        """Missing associated documentation comment in .proto file."""
+        context.set_code(grpc.StatusCode.UNIMPLEMENTED)
+        context.set_details('Method not implemented!')
+        raise NotImplementedError('Method not implemented!')
+
+    def FanOut(self, request, context):
         """Missing associated documentation comment in .proto file."""
         context.set_code(grpc.StatusCode.UNIMPLEMENTED)
         context.set_details('Method not implemented!')
@@ -104,6 +115,11 @@ def add_DataXServicer_to_server(servicer, server):
                     servicer.Emit,
                     request_deserializer=datax__sdk__protocol__pb2.EmitMessage.FromString,
                     response_serializer=datax__sdk__protocol__pb2.EmitResult.SerializeToString,
+            ),
+            'FanOut': grpc.unary_unary_rpc_method_handler(
+                    servicer.FanOut,
+                    request_deserializer=datax__sdk__protocol__pb2.FanOutRequest.FromString,
+                    response_serializer=datax__sdk__protocol__pb2.FanOutResponse.SerializeToString,
             ),
             'GetRequest': grpc.unary_unary_rpc_method_handler(
                     servicer.GetRequest,
@@ -178,6 +194,23 @@ class DataX(object):
         return grpc.experimental.unary_unary(request, target, '/datax.sdk.protocol.v2.DataX/Emit',
             datax__sdk__protocol__pb2.EmitMessage.SerializeToString,
             datax__sdk__protocol__pb2.EmitResult.FromString,
+            options, channel_credentials,
+            insecure, call_credentials, compression, wait_for_ready, timeout, metadata)
+
+    @staticmethod
+    def FanOut(request,
+            target,
+            options=(),
+            channel_credentials=None,
+            call_credentials=None,
+            insecure=False,
+            compression=None,
+            wait_for_ready=None,
+            timeout=None,
+            metadata=None):
+        return grpc.experimental.unary_unary(request, target, '/datax.sdk.protocol.v2.DataX/FanOut',
+            datax__sdk__protocol__pb2.FanOutRequest.SerializeToString,
+            datax__sdk__protocol__pb2.FanOutResponse.FromString,
             options, channel_credentials,
             insecure, call_credentials, compression, wait_for_ready, timeout, metadata)
 

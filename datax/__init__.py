@@ -1,3 +1,5 @@
+import pickle
+
 import grpc
 import json
 import os
@@ -7,10 +9,13 @@ from .protocol.datax_sdk_protocol_pb2_grpc import DataXStub
 
 
 class DataX:
-    def __init__(self, ):
+    def __init__(self, fan_out_callback=None):
         sidecar_address = os.getenv("DATAX_SIDECAR_ADDRESS", "127.0.0.1:20001")
         self.channel = grpc.insecure_channel(sidecar_address)
         self.stub = DataXStub(self.channel)
+        self.fan_out_callback = fan_out_callback
+        if fan_out_callback is not None and os.getenv("DATAX_FAN_OUT_HANDLER") is not "":
+            self._run_fan_out_handler(fan_out_callback)
 
     @staticmethod
     def get_configuration() -> dict:
@@ -32,20 +37,17 @@ class DataX:
             request = EmitMessage(data=msgpack.packb(message))
         self.stub.Emit(request)
 
-    def request(self, backend: str, message: dict):
-        data = msgpack.packb(message)
-        reply = self.stub.SubmitRequest(Request(backend=backend, data=[data]))
-        return msgpack.unpackb(reply.data[0])
-
-    def request_many(self, backend: str, messages: list):
-        data = [msgpack.packb(it) for it in messages]
-        reply = self.stub.SubmitRequest(Request(backend=backend, data=data))
-        return [msgpack.unpackb(it) for it in reply.data]
-
-    def next_request(self) -> (str, dict):
-        request = self.stub.GetRequest(GetRequestOptions())
-        return request.sender, msgpack.unpackb(request.data[0])
-
     def reply(self, message: dict):
         data = msgpack.packb(message)
         self.stub.ReplyRequest(Reply(data=[data]))
+
+    def fan_out(self, messages: list):
+        return [self.fan_out_callback(x) for x in messages]
+
+    def _run_fan_out_handler(self, callback):
+        opts = NextOptions()
+
+        while True:
+            res = self.stub.Next(opts)
+            output = callback(pickle.loads(res.data))
+            self.stub.Emit(EmitMessage(data=pickle.dumps(output)))
