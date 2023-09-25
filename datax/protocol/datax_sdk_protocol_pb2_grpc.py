@@ -264,3 +264,97 @@ class DataX(object):
             datax__sdk__protocol__pb2.Reply.FromString,
             options, channel_credentials,
             insecure, call_credentials, compression, wait_for_ready, timeout, metadata)
+
+
+class FanOutStub(object):
+    """Missing associated documentation comment in .proto file."""
+
+    def __init__(self, channel):
+        """Constructor.
+
+        Args:
+            channel: A grpc.Channel.
+        """
+        self.GetInput = channel.unary_unary(
+                '/datax.sdk.protocol.v2.FanOut/GetInput',
+                request_serializer=datax__sdk__protocol__pb2.Empty.SerializeToString,
+                response_deserializer=datax__sdk__protocol__pb2.FanOutDataItem.FromString,
+                )
+        self.SetOutput = channel.unary_unary(
+                '/datax.sdk.protocol.v2.FanOut/SetOutput',
+                request_serializer=datax__sdk__protocol__pb2.FanOutDataItem.SerializeToString,
+                response_deserializer=datax__sdk__protocol__pb2.Empty.FromString,
+                )
+
+
+class FanOutServicer(object):
+    """Missing associated documentation comment in .proto file."""
+
+    def GetInput(self, request, context):
+        """Missing associated documentation comment in .proto file."""
+        context.set_code(grpc.StatusCode.UNIMPLEMENTED)
+        context.set_details('Method not implemented!')
+        raise NotImplementedError('Method not implemented!')
+
+    def SetOutput(self, request, context):
+        """Missing associated documentation comment in .proto file."""
+        context.set_code(grpc.StatusCode.UNIMPLEMENTED)
+        context.set_details('Method not implemented!')
+        raise NotImplementedError('Method not implemented!')
+
+
+def add_FanOutServicer_to_server(servicer, server):
+    rpc_method_handlers = {
+            'GetInput': grpc.unary_unary_rpc_method_handler(
+                    servicer.GetInput,
+                    request_deserializer=datax__sdk__protocol__pb2.Empty.FromString,
+                    response_serializer=datax__sdk__protocol__pb2.FanOutDataItem.SerializeToString,
+            ),
+            'SetOutput': grpc.unary_unary_rpc_method_handler(
+                    servicer.SetOutput,
+                    request_deserializer=datax__sdk__protocol__pb2.FanOutDataItem.FromString,
+                    response_serializer=datax__sdk__protocol__pb2.Empty.SerializeToString,
+            ),
+    }
+    generic_handler = grpc.method_handlers_generic_handler(
+            'datax.sdk.protocol.v2.FanOut', rpc_method_handlers)
+    server.add_generic_rpc_handlers((generic_handler,))
+
+
+ # This class is part of an EXPERIMENTAL API.
+class FanOut(object):
+    """Missing associated documentation comment in .proto file."""
+
+    @staticmethod
+    def GetInput(request,
+            target,
+            options=(),
+            channel_credentials=None,
+            call_credentials=None,
+            insecure=False,
+            compression=None,
+            wait_for_ready=None,
+            timeout=None,
+            metadata=None):
+        return grpc.experimental.unary_unary(request, target, '/datax.sdk.protocol.v2.FanOut/GetInput',
+            datax__sdk__protocol__pb2.Empty.SerializeToString,
+            datax__sdk__protocol__pb2.FanOutDataItem.FromString,
+            options, channel_credentials,
+            insecure, call_credentials, compression, wait_for_ready, timeout, metadata)
+
+    @staticmethod
+    def SetOutput(request,
+            target,
+            options=(),
+            channel_credentials=None,
+            call_credentials=None,
+            insecure=False,
+            compression=None,
+            wait_for_ready=None,
+            timeout=None,
+            metadata=None):
+        return grpc.experimental.unary_unary(request, target, '/datax.sdk.protocol.v2.FanOut/SetOutput',
+            datax__sdk__protocol__pb2.FanOutDataItem.SerializeToString,
+            datax__sdk__protocol__pb2.Empty.FromString,
+            options, channel_credentials,
+            insecure, call_credentials, compression, wait_for_ready, timeout, metadata)
