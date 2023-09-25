@@ -14,7 +14,7 @@ class DataX:
         self.channel = grpc.insecure_channel(sidecar_address)
         self.stub = DataXStub(self.channel)
         self.fan_out_callback = fan_out_callback
-        if fan_out_callback is not None and os.getenv("DATAX_FAN_OUT_HANDLER") is not "":
+        if fan_out_callback is not None and os.getenv("DATAX_FAN_OUT_HANDLER") == "true":
             self._run_fan_out_handler(fan_out_callback)
 
     @staticmethod
